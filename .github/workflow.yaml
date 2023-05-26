@@ -1,0 +1,59 @@
+name: Vercel Deployment
+
+env:
+    VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+    VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+on:
+    push:
+        branches:
+            - main
+
+# wenn wir hier für den workflow noch diese beiden ENV variablen setzen, nutzt er auch den vercel shared build cache
+# - TURBO_TOKEN: A Vercel Access Token
+# - TURBO_TEAM: The slug of the Vercel team to share the artifacts with (porschedigital)
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v3
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version-file: '.nvmrc'
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@v2
+              id: pnpm-install
+              with:
+                  version: 8
+                  run_install: false
+
+            # - name: Get pnpm store directory
+            #   id: pnpm-cache
+            #   shell: bash
+            #   run: |
+            #       echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+            # - uses: actions/cache@v3
+            #   name: Setup pnpm cache
+            #   with:
+            #       path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+            #       key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+            #       restore-keys: |
+            #           ${{ runner.os }}-pnpm-store-
+
+            - name: Install dependencies
+              run: pnpm install
+
+            # - name: Pull Vercel Environment Information
+            #   run: |
+            #       cd apps/test-nextjs
+            #       vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+            - name: Build & Deploy on Vercel
+              run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
