@@ -9,10 +9,6 @@ on:
     branches:
       - main
 
-# wenn wir hier für den workflow noch diese beiden ENV variablen setzen, nutzt er auch den vercel shared build cache
-# - TURBO_TOKEN: A Vercel Access Token
-# - TURBO_TEAM: The slug of the Vercel team to share the artifacts with (porschedigital)
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
