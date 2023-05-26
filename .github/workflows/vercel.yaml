@@ -59,4 +59,4 @@ jobs:
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build & Deploy on Vercel
-        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prod --with-cache --token=${{ secrets.VERCEL_TOKEN }}
